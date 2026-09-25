@@ -1,12 +1,20 @@
-[nfs]
-10.0.5.70 ansible_user=ec2-user
+---
+all:
+  children:
 
-[webservers]
-10.0.5.94 ansible_user=ec2-user
-10.0.6.53 ansible_user=ec2-user
+    nfs:
+      hosts:
+        10.0.5.70:
+          ansible_user: ec2-user
 
-[db]
-10.0.7.123 ansible_user=ec2-user
+    webservers:
+      hosts:
+        10.0.5.94:
+          ansible_user: ec2-user
+        10.0.6.53:
+          ansible_user: ec2-user
 
-[lb]
-10.0.5.29 ansible_user=ubuntu
+    db:
+      hosts:
+        10.0.7.123:
+          ansible_user: ec2-user

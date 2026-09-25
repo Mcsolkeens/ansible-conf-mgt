@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 all:
   children:
 
@@ -18,3 +19,28 @@ all:
       hosts:
         10.0.7.123:
           ansible_user: ec2-user
+=======
+- name: Update web, nfs and db servers
+  hosts: webservers, nfs, db
+  become: yes
+
+  tasks:
+    - name: Ensure Wireshark-cli is at the latest version
+      ansible.builtin.yum:
+        name: wireshark-cli
+        state: latest
+
+#- name: Update LB server
+ # hosts: lb
+  #become: yes
+
+  #tasks:
+   # - name: Update apt repository
+    #  ansible.builtin.apt:
+     #   update_cache: yes
+
+    #- name: Ensure Wireshark is at the latest version
+     # ansible.builtin.apt:
+      #  name: wireshark
+       # state: latest
+>>>>>>> c7991618f984999b1bbf5448cbd9bc3a5d93f035
