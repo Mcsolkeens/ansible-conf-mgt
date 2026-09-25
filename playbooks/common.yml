@@ -4,9 +4,9 @@
   become: yes
 
   tasks:
-    - name: Ensure Wireshark is at the latest version
+    - name: Ensure Wireshark-cli is at the latest version
       ansible.builtin.yum:
-        name: wireshark
+        name: wireshark-cli
         state: latest
 
 #- name: Update LB server
