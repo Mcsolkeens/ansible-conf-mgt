@@ -1,0 +1,9 @@
+---
+all:
+  children:
+    uat-webservers:
+      hosts:
+        10.0.5.122:
+          ansible_user: ec2-user
+        10.0.6.159:
+          ansible_user: ec2-user

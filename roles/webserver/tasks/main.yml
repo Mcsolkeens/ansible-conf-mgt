@@ -1,0 +1,53 @@
+#SPDX-License-Identifier: MIT-0
+
+# tasks file for webserver
+
+---
+# tasks file for webserver
+
+- name: install apache
+  become: true
+  ansible.builtin.yum:
+    name: httpd
+    state: present
+
+- name: install php and required extensions
+  become: true
+  ansible.builtin.yum:
+    name:
+      - php
+      - php-mysqlnd
+    state: present
+
+- name: set DirectoryIndex to prefer index.php
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^DirectoryIndex'
+    line: 'DirectoryIndex index.php index.html'
+  notify: restart apache
+
+- name: clone tooling repo to staging directory
+  become: true
+  ansible.builtin.git:
+    repo: "https://github.com/Mcsolkeens/Tooling.git"
+    dest: /home/ec2-user/tooling
+    force: yes
+
+- name: deploy tooling website content to webroot
+  become: true
+  ansible.builtin.copy:
+    src: /home/ec2-user/tooling/html/
+    dest: /var/www/html/
+    remote_src: yes
+    owner: apache
+    group: apache
+    mode: '0644'
+
+- name: ensure httpd is started and enabled
+  become: true
+  ansible.builtin.service:
+    name: httpd
+    state: started
+    enabled: yes
+
