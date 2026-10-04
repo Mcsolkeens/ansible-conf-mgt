@@ -10,7 +10,6 @@
   ansible.builtin.yum:
     name: httpd
     state: present
-
 - name: install php and required extensions
   become: true
   ansible.builtin.yum:
@@ -30,7 +29,7 @@
 - name: clone tooling repo to staging directory
   become: true
   ansible.builtin.git:
-    repo: "https://github.com/Mcsolkeens/Tooling.git"
+    repo: "https://github.com/<your-name>/tooling.git"
     dest: /home/ec2-user/tooling
     force: yes
 
@@ -44,10 +43,70 @@
     group: apache
     mode: '0644'
 
+- name: ensure webroot directory has correct permissions
+  become: true
+  ansible.builtin.file:
+    path: /var/www/html
+    state: directory
+    owner: apache
+    group: apache
+    mode: '0755'
+
+- name: patch database hostname in functions.php
+  become: true
+  ansible.builtin.replace:
+    path: /var/www/html/functions.php
+    regexp: "mysql\\.tooling\\.svc\\.cluster\\.local"
+    replace: "10.0.7.123"
+
 - name: ensure httpd is started and enabled
   become: true
   ansible.builtin.service:
     name: httpd
     state: started
     enabled: yes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
