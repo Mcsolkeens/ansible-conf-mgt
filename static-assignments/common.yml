@@ -1,0 +1,41 @@
+
+---
+- name: Remove Wireshark
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Uninstall Wireshark
+      ansible.builtin.package:
+        name: wireshark
+        state: absent
+
+
+
+
+
+
+
+#- name: Update web, nfs and db servers
+ # hosts: webservers, nfs, db
+  #become: yes
+
+  #tasks:
+   # - name: Ensure Wireshark-cli is at the latest version
+    #  ansible.builtin.yum:
+     #   name: wireshark-cli
+      #  state: latest
+
+#- name: Update LB server
+  # hosts: lb
+  #become: yes
+
+  #tasks:
+   # - name: Update apt repository
+    #  ansible.builtin.apt:
+    #    update_cache: yes
+
+    #- name: Ensure Wireshark is at the latest version
+     # ansible.builtin.apt:
+      #  name: wireshark
+       # state: latest
