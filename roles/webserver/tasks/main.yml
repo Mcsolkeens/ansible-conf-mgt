@@ -29,9 +29,10 @@
 - name: clone tooling repo to staging directory
   become: true
   ansible.builtin.git:
-    repo: "https://github.com/<your-name>/tooling.git"
+    repo: "https://github.com/Mcsolkeens/ansible-conf-mgt.git"
     dest: /home/ec2-user/tooling
     force: yes
+    update: false
 
 - name: deploy tooling website content to webroot
   become: true
