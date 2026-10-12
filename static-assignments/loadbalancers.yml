@@ -1,0 +1,11 @@
+
+---
+- name: Install Nginx load balancer
+  ansible.builtin.include_role:
+    name: nginx
+  when: enable_nginx_lb | default(false)
+
+- name: Install Apache load balancer
+  ansible.builtin.include_role:
+    name: apache
+  when: enable_apache_lb | default(false)
