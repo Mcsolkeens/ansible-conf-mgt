@@ -1,0 +1,5 @@
+
+---
+- name: Load environment variables
+  ansible.builtin.include_vars:
+    file: "{{ playbook_dir }}/../env-vars/{{ env | default('uat') }}.yml"
