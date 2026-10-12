@@ -2,15 +2,31 @@
 #- import_playbook: ../static-assignments/common.yml
 #- import_playbook: ../static-assignments/uat-webservers.yml
 
-- hosts: all
-  name: Include dynamic variables
-  tasks:
-    - import_playbook: ../static-assignments/common.yml
-    - include: ../dynamic-assignments/env-vars.yml
+
+
+
+- name: Include dynamic variables
+  hosts: all
   tags:
     - always
-
-- hosts: webservers
-  name: Webserver assignment
   tasks:
-    - import_playbook: ../static-assignments/webservers.yml
+    - name: Load environment variables
+      ansible.builtin.include_tasks: ../dynamic-assignments/env-vars.yml
+
+- name: Common assignment
+  hosts: all
+  tasks:
+    - name: Apply common tasks
+      ansible.builtin.include_tasks: ../static-assignments/common.yml
+
+- name: Webserver assignment
+  ansible.builtin.import_playbook: ../static-assignments/uat-webservers.yml
+
+- name: Loadbalancer assignment
+  hosts: lb
+  become: true
+  tasks:
+    - name: Configure load balancer
+      ansible.builtin.include_tasks: ../static-assignments/loadbalancers.yml
+      when: load_balancer_is_required | default(false)
+
