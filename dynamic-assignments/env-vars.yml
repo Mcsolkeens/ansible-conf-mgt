@@ -1,5 +1,12 @@
 
 ---
-- name: Load environment variables
+- name: Validate selected environment
+  ansible.builtin.assert:
+    that:
+      - env is defined
+      - env in ['dev', 'uat']
+    fail_msg: "Set env to either dev or uat using -e env=dev or -e env=uat."
+
+- name: Load selected environment variables
   ansible.builtin.include_vars:
-    file: "{{ playbook_dir }}/../env-vars/{{ env | default('uat') }}.yml"
+    file: "{{ playbook_dir }}/../env-vars/{{ env }}.yml"
