@@ -5,28 +5,35 @@
 
 
 
-- name: Include dynamic variables
-  hosts: all
-  tags:
-    - always
-  tasks:
-    - name: Load environment variables
-      ansible.builtin.include_tasks: ../dynamic-assignments/env-vars.yml
 
-- name: Common assignment
+
+- name: Load environment variables
   hosts: all
+  gather_facts: false
+  tasks:
+    - name: Load selected environment configuration
+      ansible.builtin.include_tasks: ../dynamic-assignments/env-vars.yml
+      tags:
+        - always
+
+- name: Apply common assignment
+  hosts: all
+  become: true
+  gather_facts: true
   tasks:
     - name: Apply common tasks
       ansible.builtin.include_tasks: ../static-assignments/common.yml
 
-- name: Webserver assignment
+- name: Configure webservers
   ansible.builtin.import_playbook: ../static-assignments/uat-webservers.yml
 
-- name: Loadbalancer assignment
-  hosts: lb
+- name: Configure load balancer
+  hosts: all
   become: true
+  gather_facts: true
   tasks:
-    - name: Configure load balancer
+    - name: Apply load-balancer configuration on LB hosts only
       ansible.builtin.include_tasks: ../static-assignments/loadbalancers.yml
-      when: load_balancer_is_required | default(false)
-
+      when:
+        - inventory_hostname in groups.get('lb', [])
+        - load_balancer_is_required | default(false) | bool
