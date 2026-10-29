@@ -5,17 +5,25 @@
 ---
 # tasks file for webserver
 
+
 - name: install apache
   become: true
   ansible.builtin.yum:
     name: httpd
     state: present
+
 - name: install php and required extensions
   become: true
   ansible.builtin.yum:
     name:
       - php
       - php-mysqlnd
+    state: present
+
+- name: install git
+  become: true
+  ansible.builtin.yum:
+    name: git
     state: present
 
 - name: set DirectoryIndex to prefer index.php
@@ -29,29 +37,26 @@
 - name: clone tooling repo to staging directory
   become: true
   ansible.builtin.git:
-    repo: "https://github.com/Mcsolkeens/ansible-conf-mgt.git"
+    repo: "https://github.com/Mcsolkeens/tooling.git"
     dest: /home/ec2-user/tooling
     force: yes
     update: false
 
 - name: deploy tooling website content to webroot
   become: true
-  ansible.builtin.copy:
-    src: /home/ec2-user/tooling/html/
-    dest: /var/www/html/
-    remote_src: yes
-    owner: apache
-    group: apache
-    mode: '0644'
+  ansible.builtin.command: cp -r /home/ec2-user/tooling/html/. /var/www/html/
+  args:
+    creates: /var/www/html/index.php
 
-- name: ensure webroot directory has correct permissions
+- name: ensure webroot ownership and permissions
   become: true
   ansible.builtin.file:
     path: /var/www/html
     state: directory
     owner: apache
     group: apache
-    mode: '0755'
+    mode: 'u=rwX,g=rX,o=rX'
+    recurse: true
 
 - name: patch database hostname in functions.php
   become: true
@@ -66,7 +71,6 @@
     name: httpd
     state: started
     enabled: yes
-
 
 
 
